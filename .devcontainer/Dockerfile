@@ -1,16 +1,27 @@
-# Use the official Python image as a parent image
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.9
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim-buster
+
+# Set the working directory in the container
+WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    swig \
+    build-essential \
+    libportaudio2 \
+    libportaudiocpp0 \
     portaudio19-dev \
-    libpulse-dev \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy and install Python dependencies
-COPY requirements.txt /tmp/pip-tmp/
-RUN pip install --upgrade pip \
-    && pip install -r /tmp/pip-tmp/requirements.txt \
-    && rm -rf /tmp/pip-tmp
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install any needed packages specified in requirements.txt
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Run main.py when the container launches
+CMD ["python", "main.py"]

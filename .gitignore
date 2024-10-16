@@ -1,0 +1,4 @@
+# .gitignore - Prevents committing sensitive or unwanted files
+credentials.json
+mycroft-precise/.venv
+__pycache__/
